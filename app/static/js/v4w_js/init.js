@@ -13,6 +13,7 @@ function initialize_html(){
   closeResultsWindow();
   removePathLayer();
   closeErrorWindow();
+  
 
 
   mymap.on('click', onMapClick);

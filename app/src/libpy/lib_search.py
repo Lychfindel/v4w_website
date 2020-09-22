@@ -340,7 +340,7 @@ def check_if_is_already_a_coordinate(input_string):
 
 def find_address_in_db(input_string):
     """
-    Wrapper functions that looks for an address in the database.
+    Wrapper that calls functions that looks for an address in the database.
     """
     app.logger.info("looking in the db")
     # fetch parameters (puo tornare utile se i parametri saranno modificabili dal browser piu avanti)
@@ -583,6 +583,7 @@ def fuzzy_search(word, isThereaCivico,scorer=fuzz.token_sort_ratio,processor=fuz
     n_limit = 15
     score_cutoff = 50
     final_matches = []
+    pdb.set_trace()
     if isThereaCivico:
         matches_neigh = process.extractBests(word,Neighborhood.query.all(),scorer=scorer,processor=processor,score_cutoff=score_cutoff,limit=n_limit)
         for m,s in matches_neigh:
@@ -593,13 +594,27 @@ def fuzzy_search(word, isThereaCivico,scorer=fuzz.token_sort_ratio,processor=fuz
                 final_matches.append((m,s))
     else:
         # andrà implementata qui la ricerca nei poi, che fa un check delle corssipondenze con le keyword e fa la query invece di Poi.query.all() filtrando sui types di poi
-        tables_where_to_look = [Neighborhood, Street, Poi] #[Street, Poi, Neighborhood]
+        tables_where_to_look = [Neighborhood, Street, Street, Poi] #[Street, Poi, Neighborhood]
         for table in tables_where_to_look:
+            looked_for_alt_name = True
             matches_table = process.extractBests(word, table.query.all(),scorer=scorer,processor=processor,score_cutoff=score_cutoff,limit=n_limit)
             for m,s in matches_table:
                 final_matches.append((m,s))
             if any([score>=threshold for match,score in final_matches]):
                 break
+        # modifiche di palma, scusate
+        # looked_for_alt_name = False
+        # pdb.set_trace()
+        # for table in tables_where_to_look:
+        #     choices = table.query.all()
+        #     if table == Street and looked_for_alt_name == False:
+        #         choices = choices
+        #         looked_for_alt_name = True
+        #         matches_table = process.extractBests(word, table.query.all(),scorer=scorer,processor=processor,score_cutoff=score_cutoff,limit=n_limit)
+        #         for m,s in matches_table:
+        #             final_matches.append((m,s))
+        #         if any([score>=threshold for match,score in final_matches]):
+        #             break
         # matches_street = process.extractBests(word,Street.query.all(),scorer=scorer,processor=processor,score_cutoff=score_cutoff,limit=n_limit)
         # for m,s in matches_street:
         #     final_matches.append((m,s))

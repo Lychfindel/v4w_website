@@ -130,6 +130,7 @@ class Street(db.Model):
     def __repr__(self):
         return self._repr(id=self.id,
                           name=self.name,
+                          name_alt=self.name_alt,
                           neighborhood=[n.name for n in self.neighborhoods.all()]
                           )
     def __str__(self):

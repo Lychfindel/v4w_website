@@ -88,6 +88,15 @@ function clearField(field_id) {
 function nowitstimetoshowtheX(button_id) {
   document.getElementById(button_id).style.display = "inline";
   console.log("showing " + button_id + " button");
+  if (map.locate)
+  {
+    console.log("stop following me!")
+    map.locate.stopFollowing();
+  }
+  else {
+    console.log("nobody is following us, we are safe!")
+  }
+
 }
 function hidefornowtheX(button_id) {
   document.getElementById(button_id).style.display = "none";
@@ -159,17 +168,25 @@ function copyEndingPosition(address_string) {
   document.getElementById('hidden_end_coord').value = address_string;
 }
 
+// this method is called from bull's eye icon top-left
 function copyMyPositionAsStart(map) {
-    map.locate().on('locationfound', function(e){
-	marker_start.setLatLng(e.latlng);
-	marker_start.addTo(mymap);
-	document.getElementById('search_field_1').value = 'La Mia Posizione';
-	document.getElementById('hidden_start_coord').value = e.latlng.toString();
-
-  //loc_control.start();
-		})
-	 .on('locationerror', function(e){
-				console.log(e);
-				alert("Location access denied.");
-		});
+  console.log("copying my position");
+  // cambia il metodo generale di Leaflet nel caso in cui
+  // qualcuno localizzi, quindi cambia il funzionamento
+  // dell'altro bottone!
+  var event = map.locate();
+  alert(event);
+  // if success
+  // .on('locationfound', function(e){
+  //   mycoord = e;
+  // })
+  // // if fails
+  // .on('locationerror', function(e){
+  //   console.log(e);
+  //   alert("Location access denied.");
+  // });
+  marker_start.setLatLng(mycoord.latlng);
+  marker_start.addTo(mymap);
+  document.getElementById('search_field_1').value = 'La Mia Posizione';
+  document.getElementById('hidden_start_coord').value = mycoord.toString();
 }
